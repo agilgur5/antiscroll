@@ -54,10 +54,10 @@
 
   Antiscroll.prototype.refresh = function() {
     var needHScroll = this.inner.get(0).scrollWidth > this.el.width() + (this.y ? scrollbarSize() : 0), 
-	    needVScroll = this.inner.get(0).scrollHeight > this.el.height() + (this.x ? scrollbarSize() : 0);
+      needVScroll = this.inner.get(0).scrollHeight > this.el.height() + (this.x ? scrollbarSize() : 0);
 
     if (this.x) {
-      if (!this.horizontal && needHScroll) {
+      if (!this.horizontal || needHScroll) {
         this.horizontal = new Scrollbar.Horizontal(this);
       } else if (this.horizontal && !needHScroll)  {
         this.horizontal.destroy();
@@ -68,7 +68,7 @@
     }
 
     if (this.y) {
-      if (!this.vertical && needVScroll) {
+      if (!this.vertical || needVScroll) {
         this.vertical = new Scrollbar.Vertical(this);
       } else if (this.vertical && !needVScroll)  {
         this.vertical.destroy();
@@ -232,8 +232,8 @@
     this.el[0].ownerDocument.onselectstart = function () { return false; };
 
     var pane = this.pane,
-	    move = $.proxy(this, 'mousemove'),
-		self = this
+      move = $.proxy(this, 'mousemove'),
+    self = this
 
     $(this.el[0].ownerDocument)
       .mousemove(move)
@@ -305,8 +305,8 @@
 
   Scrollbar.Horizontal.prototype.update = function () {
     var paneWidth = this.pane.el.width(), 
-	    trackWidth = paneWidth - this.pane.padding * 2,
-		innerEl = this.pane.inner.get(0)
+      trackWidth = paneWidth - this.pane.padding * 2,
+    innerEl = this.pane.inner.get(0)
 
     this.el
       .css('width', trackWidth * paneWidth / innerEl.scrollWidth)
@@ -323,9 +323,9 @@
 
   Scrollbar.Horizontal.prototype.mousemove = function (ev) {
     var trackWidth = this.pane.el.width() - this.pane.padding * 2, 
-	    pos = ev.pageX - this.startPageX,
-		barWidth = this.el.width(),
-		innerEl = this.pane.inner.get(0)
+      pos = ev.pageX - this.startPageX,
+    barWidth = this.el.width(),
+    innerEl = this.pane.inner.get(0)
 
     // minimum top is 0, maximum is the track height
     var y = Math.min(Math.max(pos, 0), trackWidth - barWidth);
@@ -374,8 +374,8 @@
 
   Scrollbar.Vertical.prototype.update = function () {
     var paneHeight = this.pane.el.height(), 
-	    trackHeight = paneHeight - this.pane.padding * 2,
-		innerEl = this.innerEl;
+      trackHeight = paneHeight - this.pane.padding * 2,
+    innerEl = this.innerEl;
       
     var scrollbarHeight = trackHeight * paneHeight / innerEl.scrollHeight;
     scrollbarHeight = scrollbarHeight < 20 ? 20 : scrollbarHeight;
@@ -390,8 +390,8 @@
     this.el
       .css('height', scrollbarHeight)
       .css('top', topPos);
-	  
-	  return paneHeight < innerEl.scrollHeight;
+    
+    return paneHeight < innerEl.scrollHeight;
   };
 
   /**
@@ -402,10 +402,10 @@
 
   Scrollbar.Vertical.prototype.mousemove = function (ev) {
     var paneHeight = this.pane.el.height(),
-	    trackHeight = paneHeight - this.pane.padding * 2,
-		pos = ev.pageY - this.startPageY,
-		barHeight = this.el.height(),
-		innerEl = this.innerEl
+      trackHeight = paneHeight - this.pane.padding * 2,
+    pos = ev.pageY - this.startPageY,
+    barHeight = this.el.height(),
+    innerEl = this.innerEl
 
     // minimum top is 0, maximum is the track height
     var y = Math.min(Math.max(pos, 0), trackHeight - barHeight);
